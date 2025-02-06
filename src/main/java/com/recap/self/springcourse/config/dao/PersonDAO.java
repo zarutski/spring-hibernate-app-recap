@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class PersonDAO {
 
-    private static final String SELECT_SCRIPT = "SELECT p FROM Person p";
+    private static final String SELECT_SCRIPT = "FROM Person p";
 
     private final SessionFactory sessionFactory;
 
@@ -27,17 +27,36 @@ public class PersonDAO {
         return session.createQuery(SELECT_SCRIPT, Person.class).getResultList();
     }
 
+    @Transactional(readOnly = true)
     public Person show(int id) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        return session.find(Person.class, id);
     }
 
+    @Transactional
     public void save(Person person) {
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(person);
     }
 
+    @Transactional
     public void update(int id, Person person) {
+        Session session = sessionFactory.getCurrentSession();
+        Person persisted = session.find(Person.class, id);
+        if (persisted != null) {
+            persisted.setName(person.getName());
+            persisted.setSurname(person.getSurname());
+            persisted.setAge(person.getAge());
+            persisted.setEmail(person.getEmail());
+        }
     }
 
+    @Transactional
     public void delete(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        Person person = session.find(Person.class, id);
+        if (person != null) {
+            session.remove(person);
+        }
     }
-
 }
