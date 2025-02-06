@@ -48,3 +48,13 @@ build/
 /.smarttomcat/spring-recap2-02/conf/tomcat-users.xml
 /.smarttomcat/spring-recap2-02/conf/tomcat-users.xsd
 /.smarttomcat/spring-recap2-02/conf/web.xml
+/.smarttomcat/spring-recap-basic/conf/catalina.properties
+/.smarttomcat/spring-recap-basic/conf/context.xml
+/.smarttomcat/spring-recap-basic/conf/jaspic-providers.xml
+/.smarttomcat/spring-recap-basic/conf/jaspic-providers.xsd
+/.smarttomcat/spring-recap-basic/conf/logging.properties
+/.smarttomcat/spring-recap-basic/conf/server.xml
+/.smarttomcat/spring-recap-basic/conf/tomcat-users.xml
+/.smarttomcat/spring-recap-basic/conf/tomcat-users.xsd
+/.idea/vcs.xml
+/.smarttomcat/spring-recap-basic/conf/web.xml

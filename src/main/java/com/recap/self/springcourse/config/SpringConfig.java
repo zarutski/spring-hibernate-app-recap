@@ -7,8 +7,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,11 +22,13 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 import javax.sql.DataSource;
 import java.util.Objects;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.recap.self.springcourse")
 @EnableWebMvc // --- added for MVC support (analog of: <mvc:annotation-driven/>)
-@PropertySource("classpath:database.properties") // --- path to the property files
+@PropertySource("classpath:hibernate.properties") // --- path to the property files
+@EnableTransactionManagement // --- transactions management by spring (annotation-driven)
 public class SpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
@@ -77,17 +82,39 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driver")));
-        dataSource.setUrl(environment.getProperty("url"));
-        dataSource.setUsername(environment.getProperty("login"));
-        dataSource.setPassword(environment.getProperty("password"));
+        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("hibernate.driver_class")));
+        dataSource.setUrl(environment.getProperty("hibernate.connection.url"));
+        dataSource.setUsername(environment.getProperty("hibernate.connection.username"));
+        dataSource.setPassword(environment.getProperty("hibernate.connection.password"));
         return dataSource;
     }
 
-    // --- JDBC Template config (Bean creation)
+    // --- hibernate instead of JDBC Template Bean [sometimes should use both together: Hibernate & JDBC Template]
     @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
+    public LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource());
+        // --- just configure Spring to track classes for Session management
+        sessionFactory.setPackagesToScan("com.recap.self.springcourse.config.models");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+
+        return sessionFactory;
     }
 
+    // --- transaction management by Spring config
+    @Bean
+    public PlatformTransactionManager hibernateTransactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+
+        return transactionManager;
+    }
+
+    private Properties hibernateProperties() {
+        Properties properties = new Properties();
+        properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
+        properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
+
+        return properties;
+    }
 }
