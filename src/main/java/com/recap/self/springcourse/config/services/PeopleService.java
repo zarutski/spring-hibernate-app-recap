@@ -1,5 +1,6 @@
 package com.recap.self.springcourse.config.services;
 
+import com.recap.self.springcourse.config.models.Mood;
 import com.recap.self.springcourse.config.models.Person;
 import com.recap.self.springcourse.config.repositories.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class PeopleService {
 
     @Transactional // --- overrides class-level annotation, more specific [readonly default is false]
     public void save(Person person) {
-        person.setCreatedAt(new Date());
+        setCreationDefaults(person);
         repository.save(person);
     }
 
@@ -47,4 +48,8 @@ public class PeopleService {
         repository.deleteById(id);
     }
 
+    private void setCreationDefaults(Person person) {
+        person.setCreatedAt(new Date());
+        person.setMood(Mood.CALM);
+    }
 }

@@ -1,7 +1,15 @@
 package com.recap.self.springcourse.config.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -46,6 +54,12 @@ public class Person {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP) // --- used by Spring for data fields behaviour setup
     private Date createdAt;
+
+    @Column(name = "mood")
+    @Enumerated(EnumType.STRING) // --- mark Enums so Hibernate will persist Enum's data
+    // ORDINAL - saving numbered representation of Enum (bad, if ENUM's order can be changed withing code)
+    // STRING - saving String representation (not optimal, because of bigger DB memory consumption)
+    private Mood mood;
 
     public Person() {
     }
@@ -111,5 +125,13 @@ public class Person {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Mood getMood() {
+        return mood;
+    }
+
+    public void setMood(Mood mood) {
+        this.mood = mood;
     }
 }
