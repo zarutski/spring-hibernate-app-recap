@@ -45,4 +45,24 @@ public class PeopleService {
         repository.deleteById(id);
     }
 
+    public List<Person> findByName(String name) {
+        return repository.findByName(name);
+    }
+
+    public List<Person> findByNameOrderByAge(String name) {
+        return repository.findByNameOrderByAge(name);
+    }
+
+    public List<Person> findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
+    public List<Person> findByNameStartingWith(String startingWith) {
+        return repository.findByNameStartingWith(startingWith);
+    }
+
+    public List<Person> findByNameOrEmail(String name, String email) {
+        return repository.findByNameOrEmail(name, email);
+    }
+
 }

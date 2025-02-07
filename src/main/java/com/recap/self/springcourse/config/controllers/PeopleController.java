@@ -1,6 +1,8 @@
 package com.recap.self.springcourse.config.controllers;
 
+import com.recap.self.springcourse.config.models.Item;
 import com.recap.self.springcourse.config.models.Person;
+import com.recap.self.springcourse.config.services.ItemService;
 import com.recap.self.springcourse.config.services.PeopleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +24,35 @@ import java.util.List;
 public class PeopleController {
 
     private final PeopleService peopleService;
+    private final ItemService itemService;
 
     @Autowired
-    public PeopleController(PeopleService peopleService) {
+    public PeopleController(PeopleService peopleService, ItemService itemService) {
         this.peopleService = peopleService;
+        this.itemService = itemService;
     }
 
     @GetMapping
     public String index(Model model) {
+        // --- ------------------------------------
+        // --- testing methods behaviour (no need to call)
+        // --- ------------------------------------
+        testingJPACustomMethodsWithDebug();
+        // --- ------------------------------------
+
         List<Person> index = peopleService.findAll();
         model.addAttribute("people", index);
         return "people/index";
+    }
+
+    private void testingJPACustomMethodsWithDebug() {
+        List<Item> items = itemService.findByItemName("Book");
+        items = itemService.findByOwner(peopleService.find(1));
+        List<Person> people = peopleService.findByName("Bob");
+        people = peopleService.findByEmail("Jack_Vorobei@gmail.com");
+        people = peopleService.findByNameStartingWith("M");
+        people = peopleService.findByNameOrEmail("Bob", "Jack_Vorobei@gmail.com");
+
     }
 
     @GetMapping("/{id}")
