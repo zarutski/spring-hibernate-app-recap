@@ -33,6 +33,11 @@
         <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error text stub</div>
         <br>
 
+        <label for="date_of_birth">Date of birth (dd/MM/yyyy)</label>
+        <input type="text" th:field="*{dateOfBirth}" id="date_of_birth">
+        <div style="color:red" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Date of birth error text stub</div>
+        <br>
+
         <input type="submit" value="Add Person">
 
     </div>

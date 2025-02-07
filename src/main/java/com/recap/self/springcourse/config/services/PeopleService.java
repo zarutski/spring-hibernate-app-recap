@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 // --- additional Transaction management despite Repository auto-transactions
@@ -31,6 +32,7 @@ public class PeopleService {
 
     @Transactional // --- overrides class-level annotation, more specific [readonly default is false]
     public void save(Person person) {
+        person.setCreatedAt(new Date());
         repository.save(person);
     }
 
