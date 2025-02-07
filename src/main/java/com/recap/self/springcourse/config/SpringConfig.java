@@ -7,9 +7,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -29,6 +31,7 @@ import java.util.Properties;
 @EnableWebMvc // --- added for MVC support (analog of: <mvc:annotation-driven/>)
 @PropertySource("classpath:hibernate.properties") // --- path to the property files
 @EnableTransactionManagement // --- transactions management by spring (annotation-driven)
+@EnableJpaRepositories("com.recap.self.springcourse.config.repositories")
 public class SpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
@@ -89,23 +92,26 @@ public class SpringConfig implements WebMvcConfigurer {
         return dataSource;
     }
 
-    // --- hibernate instead of JDBC Template Bean [sometimes should use both together: Hibernate & JDBC Template]
+    // --- replace LocalSessionFactoryBean by EntityManagerFactory for Spring Data JPA usage [base JPA interface instead of Hibernate]
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         // --- just configure Spring to track classes for Session management
-        sessionFactory.setPackagesToScan("com.recap.self.springcourse.config.models");
-        sessionFactory.setHibernateProperties(hibernateProperties());
+        em.setDataSource(dataSource());
+        em.setPackagesToScan("com.recap.self.springcourse.config.models");
 
-        return sessionFactory;
+        final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaProperties(hibernateProperties());
+
+        return em;
     }
 
-    // --- transaction management by Spring config
+    // --- transaction management by Spring Data Jpa [JPA transaction manager instead of Hibernate]
     @Bean
-    public PlatformTransactionManager hibernateTransactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 
         return transactionManager;
     }

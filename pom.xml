@@ -16,6 +16,7 @@
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <org.postgresql.verson>42.7.4</org.postgresql.verson>
         <hibernate-core.version>6.6.6.Final</hibernate-core.version>
+        <org.springframework.data.version>3.4.1</org.springframework.data.version>
     </properties>
 
     <dependencies>
@@ -89,6 +90,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${org.spring.framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${org.springframework.data.version}</version>
         </dependency>
     </dependencies>
 
