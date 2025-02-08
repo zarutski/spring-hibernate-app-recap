@@ -11,7 +11,6 @@
         <org.spring.framework.version>6.2.1</org.spring.framework.version>
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <org.thymeleaf.version>3.1.2.RELEASE</org.thymeleaf.version>
-        <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <org.postgresql.verson>42.7.4</org.postgresql.verson>
